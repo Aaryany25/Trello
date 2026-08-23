@@ -93,6 +93,24 @@ app.post("/signin",(req,res)=>{
     })
 })
 app.post("/organization",(req,res)=>{
+    const title = req.body.title;
+    const dec = req.body.dec;
+    const username=req.body.username;
+     const userExists = users.find(user => user.username === username);
+     if(!userExists){
+        res.status(403).json({
+            message: "User Does Not Exist"
+        })
+        return;
+     }
+
+    organistions.push({
+        id:OrgId++, 
+        title:title,   
+        dec:dec,
+        amin:userExists.id,
+        members:[userExists.id]
+    })
     
 })
 app.post("/member",(req,res)=>{
