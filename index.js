@@ -114,7 +114,7 @@ app.post("/organization",(req,res)=>{
     
 })
 app.post("/member",(req,res)=>{
-    
+    const employee 
 })
 app.post("/boards",(req,res)=>{
     
