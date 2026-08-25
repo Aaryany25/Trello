@@ -7,20 +7,26 @@
 // 3.test for backend ,
 // 4.frontend
 const express = require('express')
-app.use(express.json());
+const jwt = require('jsonwebtoken')
 const app = express()
-const userId =1;
-const OrgId=1
-const Users =[{
+app.use(express.json());
+
+let userId = 3;
+let OrgId = 3;
+const users = [{
     id:1,
     name:"Aryan",
-    passord:123,
+    username:"aryan",
+    password:123,
     
 },{
     id:2,
     name:"Avni",
+    username:"avni",
     password:123
 }];
+const Users = users;
+
 const organistions=[{
     id:1,
     title:"Organization",
@@ -64,11 +70,14 @@ const password=req.body.password;
             message: "User with this username already exists"
         })
   }
-   Users.push({
+   users.push({
+        id: userId++,
         username: username, 
         password: password
     })
-
+    res.json({
+        message: "Signed up successfully"
+    })
 })
 app.post("/signin",(req,res)=>{
       const username = req.body.username;
@@ -104,17 +113,55 @@ app.post("/organization",(req,res)=>{
         return;
      }
 
-    organistions.push({
+    const newOrg = {
         id:OrgId++, 
         title:title,   
         dec:dec,
         amin:userExists.id,
         members:[userExists.id]
-    })
-    
+    };
+    organistions.push(newOrg);
+    res.json({
+        message: "Organization created successfully",
+        organization: newOrg
+    });
 })
 app.post("/member",(req,res)=>{
-    const employee 
+    const orgId = req.body.orgId;
+    const employee = req.body.employee || req.body.username || req.body.userId;
+
+    if (!orgId || !employee) {
+        return res.status(400).json({
+            message: "orgId and employee (username or userId) are required"
+        });
+    }
+
+    const org = organistions.find(o => o.id === Number(orgId) || o.id === orgId);
+    if (!org) {
+        return res.status(404).json({
+            message: "Organization not found"
+        });
+    }
+
+    const user = users.find(u => u.username === employee || u.name === employee || u.id === Number(employee));
+    if (!user) {
+        return res.status(404).json({
+            message: "User does not exist"
+        });
+    }
+
+    if (org.members.includes(user.id)) {
+        return res.status(400).json({
+            message: "User is already a member of this organization"
+        });
+    }
+
+    org.members.push(user.id);
+
+    res.json({
+        message: "Member added successfully",
+        members: org.members
+    });
 })
 app.post("/boards",(req,res)=>{
     
@@ -131,7 +178,22 @@ app.get("/issue",(req,res)=>{
     
 })
 app.get("/members",(req,res)=>{
-    
+    const orgId = req.query.orgId || req.body.orgId;
+    if (!orgId) {
+        return res.status(400).json({
+            message: "orgId is required"
+        });
+    }
+    const org = organistions.find(o => o.id === Number(orgId) || o.id === orgId);
+    if (!org) {
+        return res.status(404).json({
+            message: "Organization not found"
+        });
+    }
+    const memberDetails = users.filter(u => org.members.includes(u.id));
+    res.json({
+        members: memberDetails
+    });
 })
 // Update endpoints 
 app.put("/issues",(req,res)=>{
