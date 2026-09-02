@@ -1,84 +1,65 @@
-import { Trello, Github, Twitter, Linkedin, Disc as Discord, Heart } from 'lucide-react';
+import { Sparkles, Heart } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="bg-slate-950 border-t border-slate-900 pt-16 pb-12 text-slate-400 text-sm">
+    <footer className="mt-20 border-t-2 border-black bg-white py-12 text-black">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-8 pb-12 border-b border-slate-900">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 pb-10 border-b-2 border-black/10">
           
-          {/* Brand Info */}
-          <div className="col-span-2 space-y-4">
-            <a href="#" className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-500 to-cyan-400 p-[1px]">
-                <div className="w-full h-full bg-slate-950 rounded-[11px] flex items-center justify-center">
-                  <Trello className="w-4 h-4 text-blue-400" />
-                </div>
+          {/* Col 1 */}
+          <div className="space-y-3 md:col-span-1">
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 bg-white border-2 border-black rounded flex flex-col items-center justify-center font-black leading-none text-[#2563EB] shadow-[1.5px_1.5px_0px_#000000]">
+                <div className="text-[9px]">LO</div>
+                <div className="text-[9px]">GO</div>
               </div>
-              <span className="font-bold text-xl tracking-tight text-white">
-                Task<span className="text-blue-500">Flow</span>
+              <span className="font-black text-lg tracking-tight">
+                Work<span className="text-[#FF5B5B]">Spot</span>
               </span>
-            </a>
-            <p className="text-xs sm:text-sm text-slate-400 max-w-sm leading-relaxed">
-              The modern agile board and sprint planning platform built for fast-moving engineering teams, indie builders, and product leaders.
-            </p>
-            <div className="flex items-center gap-2 text-xs text-emerald-400">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>All Systems Operational (99.99% SLA)</span>
             </div>
+            <p className="text-xs font-semibold text-neutral-600 leading-relaxed">
+              The premier retro-modern job board connecting world-class talent with pioneering tech teams.
+            </p>
           </div>
 
-          {/* Column: Product */}
-          <div>
-            <h4 className="font-semibold text-white text-xs uppercase tracking-wider mb-3">Product</h4>
-            <ul className="space-y-2 text-xs">
-              <li><a href="#features" className="hover:text-white transition-colors">Kanban Boards</a></li>
-              <li><a href="#features" className="hover:text-white transition-colors">Sprint Backlogs</a></li>
-              <li><a href="#workflow" className="hover:text-white transition-colors">Workspaces & Orgs</a></li>
-              <li><a href="#workflow" className="hover:text-white transition-colors">Role Permissions</a></li>
-              <li><a href="#pricing" className="hover:text-white transition-colors">Pricing & Plans</a></li>
-            </ul>
+          {/* Col 2 */}
+          <div className="space-y-2 text-xs font-bold">
+            <div className="text-black uppercase tracking-wider text-[11px] mb-2 font-black">For Job Seekers</div>
+            <div><a href="#" className="text-neutral-600 hover:text-[#FF5B5B] transition-colors">Browse Design Jobs</a></div>
+            <div><a href="#" className="text-neutral-600 hover:text-[#FF5B5B] transition-colors">Browse Engineering Jobs</a></div>
+            <div><a href="#" className="text-neutral-600 hover:text-[#FF5B5B] transition-colors">Remote Jobs Directory</a></div>
+            <div><a href="#" className="text-neutral-600 hover:text-[#FF5B5B] transition-colors">Salary Calculator</a></div>
           </div>
 
-          {/* Column: Resources */}
-          <div>
-            <h4 className="font-semibold text-white text-xs uppercase tracking-wider mb-3">Resources</h4>
-            <ul className="space-y-2 text-xs">
-              <li><a href="#faq" className="hover:text-white transition-colors">Documentation</a></li>
-              <li><a href="#faq" className="hover:text-white transition-colors">API Reference</a></li>
-              <li><a href="#faq" className="hover:text-white transition-colors">Community Discord</a></li>
-              <li><a href="#faq" className="hover:text-white transition-colors">Changelog</a></li>
-              <li><a href="#faq" className="hover:text-white transition-colors">Help Center</a></li>
-            </ul>
+          {/* Col 3 */}
+          <div className="space-y-2 text-xs font-bold">
+            <div className="text-black uppercase tracking-wider text-[11px] mb-2 font-black">For Employers</div>
+            <div><a href="#" className="text-neutral-600 hover:text-[#FF5B5B] transition-colors">Post a Job Opening</a></div>
+            <div><a href="#" className="text-neutral-600 hover:text-[#FF5B5B] transition-colors">Talent Search</a></div>
+            <div><a href="#" className="text-neutral-600 hover:text-[#FF5B5B] transition-colors">Hiring Pricing</a></div>
+            <div><a href="#" className="text-neutral-600 hover:text-[#FF5B5B] transition-colors">Employer Branding</a></div>
           </div>
 
-          {/* Column: Company */}
-          <div>
-            <h4 className="font-semibold text-white text-xs uppercase tracking-wider mb-3">Company</h4>
-            <ul className="space-y-2 text-xs">
-              <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Careers (We're Hiring!)</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
-              <li><a href="#" className="hover:text-white transition-colors">Security Overview</a></li>
-            </ul>
+          {/* Col 4 */}
+          <div className="space-y-2 text-xs font-bold">
+            <div className="text-black uppercase tracking-wider text-[11px] mb-2 font-black">About</div>
+            <div><a href="#" className="text-neutral-600 hover:text-[#FF5B5B] transition-colors">About Us</a></div>
+            <div><a href="#" className="text-neutral-600 hover:text-[#FF5B5B] transition-colors">Design Guidelines</a></div>
+            <div><a href="#" className="text-neutral-600 hover:text-[#FF5B5B] transition-colors">Terms & Privacy</a></div>
+            <div><a href="#" className="text-neutral-600 hover:text-[#FF5B5B] transition-colors">Contact Support</a></div>
           </div>
 
         </div>
 
-        {/* Bottom bar */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs">
-          <div className="flex items-center gap-1 text-slate-400">
-            <span>© {new Date().getFullYear()} TaskFlow Inc. Built with</span>
-            <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
-            <span>for high-performance builders.</span>
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-bold text-neutral-600">
+          <div>
+            © {new Date().getFullYear()} WorkSpot Inc. Built with Neo-Brutalist Design & Shadcn UI.
           </div>
-
-          <div className="flex items-center gap-4 text-slate-400">
-            <a href="#" className="hover:text-white transition-colors"><Twitter className="w-4 h-4" /></a>
-            <a href="#" className="hover:text-white transition-colors"><Github className="w-4 h-4" /></a>
-            <a href="#" className="hover:text-white transition-colors"><Discord className="w-4 h-4" /></a>
-            <a href="#" className="hover:text-white transition-colors"><Linkedin className="w-4 h-4" /></a>
+          <div className="flex items-center gap-4 text-black">
+            <a href="#" className="hover:text-[#FF5B5B] transition-colors">Twitter (X)</a>
+            <a href="#" className="hover:text-[#FF5B5B] transition-colors">GitHub</a>
+            <a href="#" className="hover:text-[#FF5B5B] transition-colors">LinkedIn</a>
           </div>
         </div>
 
