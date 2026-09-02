@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronUp, RotateCcw, Building2, Kanban, Plus, CheckCircle, BarChart2 } from 'lucide-react';
+import { ChevronDown, ChevronUp, RotateCcw, Building2, Kanban, Plus, CheckCircle, BarChart2, Users, UserPlus } from 'lucide-react';
 import { Checkbox } from './ui/checkbox';
 import { Button } from './ui/button';
 
@@ -7,6 +7,8 @@ export default function WorkspaceSidebar({
   organizations,
   activeOrgId,
   setActiveOrgId,
+  onOpenCreateOrg,
+  onOpenOrgMembers,
   boards,
   activeBoardId,
   setActiveBoardId,
@@ -23,6 +25,8 @@ export default function WorkspaceSidebar({
   completedCards
 }) {
   const [isCollapsed, setIsCollapsed] = useState(false);
+
+  const activeOrg = organizations.find((o) => o.id === activeOrgId) || organizations[0];
 
   const toggleStatus = (status) => {
     if (selectedStatuses.includes(status)) {
@@ -87,12 +91,22 @@ export default function WorkspaceSidebar({
         {!isCollapsed && (
           <div className="space-y-6">
             
-            {/* Organization Selector */}
+            {/* Organisation Selector & Management */}
             <div>
-              <label className="block text-xs font-black uppercase tracking-wider text-black mb-2">
-                Active Organization
-              </label>
-              <div className="relative">
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-xs font-black uppercase tracking-wider text-black">
+                  Active Organisation
+                </label>
+                <button
+                  onClick={onOpenCreateOrg}
+                  className="text-[11px] font-extrabold text-[#2563EB] hover:underline flex items-center gap-0.5 cursor-pointer"
+                  title="Create new organisation"
+                >
+                  <Plus className="w-3 h-3" /> New Org
+                </button>
+              </div>
+
+              <div className="relative mb-2">
                 <select
                   value={activeOrgId}
                   onChange={(e) => setActiveOrgId(Number(e.target.value))}
@@ -106,6 +120,18 @@ export default function WorkspaceSidebar({
                 </select>
                 <ChevronDown className="w-4 h-4 text-black absolute right-3 top-3 pointer-events-none" />
               </div>
+
+              {/* Org Members Quick link */}
+              <button
+                onClick={onOpenOrgMembers}
+                className="w-full py-1.5 px-2 bg-white hover:bg-[#FFFDF9] border border-black rounded text-[11px] font-bold text-black flex items-center justify-between shadow-[1px_1px_0px_#000000] cursor-pointer transition-all"
+              >
+                <span className="flex items-center gap-1.5">
+                  <Users className="w-3.5 h-3.5 text-[#10B981]" />
+                  <span>{activeOrg?.members?.length || 1} Team Members</span>
+                </span>
+                <span className="text-[#2563EB] hover:underline">+ Invite</span>
+              </button>
             </div>
 
             {/* Boards List */}
@@ -116,7 +142,7 @@ export default function WorkspaceSidebar({
                 </label>
                 <button
                   onClick={onOpenCreateBoard}
-                  className="text-[11px] font-bold text-[#2563EB] hover:underline flex items-center gap-0.5"
+                  className="text-[11px] font-extrabold text-[#2563EB] hover:underline flex items-center gap-0.5 cursor-pointer"
                 >
                   <Plus className="w-3 h-3" /> New
                 </button>

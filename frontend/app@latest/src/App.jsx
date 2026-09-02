@@ -6,11 +6,14 @@ import KanbanBoard from './components/KanbanBoard';
 import CardDetailModal from './components/CardDetailModal';
 import CreateBoardModal from './components/CreateBoardModal';
 import CreateCardModal from './components/CreateCardModal';
+import CreateOrgModal from './components/CreateOrgModal';
+import OrgMembersModal from './components/OrgMembersModal';
+import AuthPage from './components/AuthPage';
 import Footer from './components/Footer';
 
 const INITIAL_ORGS = [
-  { id: 1, title: "Organization 1", dec: "Main workspace", admin: 1, members: ["Aryan", "Avni"] },
-  { id: 2, title: "Organization 2", dec: "Secondary workspace", admin: 2, members: ["Avni"] }
+  { id: 1, title: "Organization 1", dec: "Main workspace", admin: 1, amin: 1, members: ["Aryan", "Avni"] },
+  { id: 2, title: "Organization 2", dec: "Secondary workspace", admin: 2, amin: 2, members: ["Avni"] }
 ];
 
 const INITIAL_BOARDS = [
@@ -42,15 +45,16 @@ const INITIAL_CARDS = [
   {
     id: 2,
     board: 1,
-    title: "Implement JWT Auth & Middleware",
-    description: "Secure endpoints with Bearer token authentication and user payload decoding in Express.",
+    title: "Implement JWT Auth & /logout Endpoint",
+    description: "Secure endpoints with Bearer token authentication and user session clearance in Express backend.",
     status: "done",
     priority: "High",
     assignee: "Aryan",
     labels: ["Backend", "High Priority"],
     checklist: [
       { text: "Generate signed JWT tokens upon login", completed: true },
-      { text: "Write verifyToken auth middleware", completed: true }
+      { text: "Write verifyToken auth middleware", completed: true },
+      { text: "Create /logout route and controller handler", completed: true }
     ],
     comments: []
   },
@@ -129,13 +133,23 @@ const INITIAL_CARDS = [
 ];
 
 export default function App() {
+  // Auth State
+  const [currentUser, setCurrentUser] = useState({
+    id: 1,
+    name: "Aryan",
+    username: "aryan",
+    token: "jwt-token-initial"
+  });
+  const [isAuthViewOpen, setIsAuthViewOpen] = useState(false);
+
+  // Organization & Board State
   const [organizations, setOrganizations] = useState(INITIAL_ORGS);
   const [activeOrgId, setActiveOrgId] = useState(1);
   const [boards, setBoards] = useState(INITIAL_BOARDS);
   const [activeBoardId, setActiveBoardId] = useState(1);
   const [cards, setCards] = useState(INITIAL_CARDS);
 
-  // Search & Filtering
+  // Search & Filtering State
   const [searchQuery, setSearchQuery] = useState('');
   const [assigneeQuery, setAssigneeQuery] = useState('');
   const [activeTag, setActiveTag] = useState('');
@@ -148,6 +162,8 @@ export default function App() {
   const [selectedCardForDetail, setSelectedCardForDetail] = useState(null);
   const [isCreateBoardOpen, setIsCreateBoardOpen] = useState(false);
   const [isCreateCardOpen, setIsCreateCardOpen] = useState(false);
+  const [isCreateOrgOpen, setIsCreateOrgOpen] = useState(false);
+  const [isOrgMembersOpen, setIsOrgMembersOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
 
   const showToast = (msg) => {
@@ -166,7 +182,70 @@ export default function App() {
     }
   }, [activeOrgId, orgBoards, activeBoardId]);
 
-  const activeBoard = boards.find((b) => b.id === activeBoardId) || boards[0];
+  const activeBoard = boards.find((b) => b.id === activeBoardId) || orgBoards[0] || boards[0];
+  const activeOrg = organizations.find((o) => o.id === activeOrgId) || organizations[0];
+
+  // Auth Handlers
+  const handleLoginSuccess = (userObj, newOrgTitle) => {
+    setCurrentUser(userObj);
+    setIsAuthViewOpen(false);
+
+    if (newOrgTitle) {
+      const newOrg = {
+        id: Date.now(),
+        title: newOrgTitle,
+        dec: "User personal workspace",
+        admin: userObj.id,
+        amin: userObj.id,
+        members: [userObj.name]
+      };
+      const newBoard = {
+        id: Date.now() + 1,
+        title: "Sprint 1",
+        orgId: newOrg.id,
+        organistions: newOrg.id
+      };
+      setOrganizations([...organizations, newOrg]);
+      setBoards([...boards, newBoard]);
+      setActiveOrgId(newOrg.id);
+      setActiveBoardId(newBoard.id);
+    }
+
+    showToast(`Welcome, ${userObj.name}! Logged in successfully.`);
+  };
+
+  const handleLogout = () => {
+    // Call simulated backend /logout endpoint
+    setCurrentUser(null);
+    setIsAuthViewOpen(true);
+    showToast('Logged out successfully (Endpoint: POST /logout)');
+  };
+
+  // Organization Handlers
+  const handleOrgCreated = (newOrg, defaultBoard) => {
+    setOrganizations([...organizations, newOrg]);
+    if (defaultBoard) {
+      setBoards([...boards, defaultBoard]);
+      setActiveBoardId(defaultBoard.id);
+    }
+    setActiveOrgId(newOrg.id);
+    showToast(`Organisation "${newOrg.title}" created successfully!`);
+  };
+
+  const handleAddOrgMember = (orgId, memberName) => {
+    setOrganizations(
+      organizations.map((org) => {
+        if (org.id === orgId) {
+          const currentMembers = org.members || [];
+          if (!currentMembers.includes(memberName)) {
+            return { ...org, members: [...currentMembers, memberName] };
+          }
+        }
+        return org;
+      })
+    );
+    showToast(`Added ${memberName} to ${activeOrg?.title}`);
+  };
 
   // Card Operations
   const handleMoveCard = (cardId, newStatus) => {
@@ -192,7 +271,7 @@ export default function App() {
       description: '',
       status: columnId,
       priority: 'Medium',
-      assignee: 'Aryan',
+      assignee: currentUser?.name || 'Aryan',
       labels: ['Frontend'],
       checklist: [],
       comments: []
@@ -281,6 +360,19 @@ export default function App() {
 
   const completedCardsCount = boardCards.filter((c) => c.status === 'done').length;
 
+  // Render Auth View if active
+  if (isAuthViewOpen && !currentUser) {
+    return (
+      <AuthPage
+        onLoginSuccess={handleLoginSuccess}
+        onContinueAsGuest={() => {
+          setIsAuthViewOpen(false);
+          showToast('Browsing as Guest');
+        }}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#FAF5EE] text-[#111111] flex flex-col font-sans selection:bg-[#FF5B5B] selection:text-white">
       
@@ -302,8 +394,13 @@ export default function App() {
         setActiveOrgId={setActiveOrgId}
         viewMode={viewMode}
         setViewMode={setViewMode}
+        currentUser={currentUser}
         onOpenCreateCard={() => setIsCreateCardOpen(true)}
         onOpenCreateBoard={() => setIsCreateBoardOpen(true)}
+        onOpenCreateOrg={() => setIsCreateOrgOpen(true)}
+        onOpenOrgMembers={() => setIsOrgMembersOpen(true)}
+        onLogout={handleLogout}
+        onOpenAuthPage={() => setIsAuthViewOpen(true)}
       />
 
       {/* Main Container */}
@@ -329,6 +426,8 @@ export default function App() {
             organizations={organizations}
             activeOrgId={activeOrgId}
             setActiveOrgId={setActiveOrgId}
+            onOpenCreateOrg={() => setIsCreateOrgOpen(true)}
+            onOpenOrgMembers={() => setIsOrgMembersOpen(true)}
             boards={orgBoards}
             activeBoardId={activeBoardId}
             setActiveBoardId={setActiveBoardId}
@@ -362,7 +461,7 @@ export default function App() {
       {/* Footer */}
       <Footer />
 
-      {/* Card Details Modal */}
+      {/* Modals */}
       <CardDetailModal
         card={selectedCardForDetail}
         open={!!selectedCardForDetail}
@@ -371,7 +470,6 @@ export default function App() {
         onDeleteCard={handleDeleteCard}
       />
 
-      {/* Create Task Modal */}
       <CreateCardModal
         open={isCreateCardOpen}
         onClose={() => setIsCreateCardOpen(false)}
@@ -379,13 +477,26 @@ export default function App() {
         onCardCreated={handleCardCreated}
       />
 
-      {/* Create Board Modal */}
       <CreateBoardModal
         open={isCreateBoardOpen}
         onClose={() => setIsCreateBoardOpen(false)}
         organizations={organizations}
         activeOrgId={activeOrgId}
         onBoardCreated={handleBoardCreated}
+      />
+
+      <CreateOrgModal
+        open={isCreateOrgOpen}
+        onClose={() => setIsCreateOrgOpen(false)}
+        currentUser={currentUser}
+        onOrgCreated={handleOrgCreated}
+      />
+
+      <OrgMembersModal
+        open={isOrgMembersOpen}
+        onClose={() => setIsOrgMembersOpen(false)}
+        activeOrg={activeOrg}
+        onAddMember={handleAddOrgMember}
       />
 
     </div>
