@@ -56,7 +56,14 @@ const signin = (req, res) => {
     });
 };
 
+const logout = (req, res) => {
+    res.json({
+        message: "Logged out successfully"
+    });
+};
+
 module.exports = {
     signup,
-    signin
+    signin,
+    logout
 };

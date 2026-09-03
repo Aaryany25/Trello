@@ -17,7 +17,7 @@ const INITIAL_ORGS = [
 ];
 
 const INITIAL_BOARDS = [
-  { id: 1, title: "Aryan fullstack", orgId: 1, organistions: 1 },
+  { id: 1, title: "Aryan ", orgId: 1, organistions: 1 },
   { id: 2, title: "Sprint 2 - Core Engine", orgId: 1, organistions: 1 },
   { id: 3, title: "Backend API Roadmap", orgId: 2, organistions: 2 }
 ];
