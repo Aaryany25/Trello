@@ -13,7 +13,7 @@ import Footer from './components/Footer';
 
 const INITIAL_ORGS = [
   { id: 1, title: "Organization 1", dec: "Main workspace", admin: 1, amin: 1, members: ["Aryan", "Avni"] },
-  { id: 2, title: "Organization 2", dec: "Secondary workspace", admin: 2, amin: 2, members: ["Avni"] }
+  { id: 2, title: "Organization 2", dec: "Secondary workspace", admin: 2, amin: 2, members: ["Avni", "Aryan"] }
 ];
 
 const INITIAL_BOARDS = [
