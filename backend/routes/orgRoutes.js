@@ -6,10 +6,16 @@ const {
     addMember,
     getMembers
 } = require('../controllers/orgController');
+const { validate } = require('../middleware/validate');
+const {
+    createOrgSchema,
+    addMemberSchema,
+    getMembersQuerySchema
+} = require('../schemas/orgSchemas');
 
 router.get('/organizations', getOrganizations);
-router.post('/organization', createOrganization);
-router.post('/member', addMember);
-router.get('/members', getMembers);
+router.post('/organization', validate({ body: createOrgSchema }), createOrganization);
+router.post('/member', validate({ body: addMemberSchema }), addMember);
+router.get('/members', validate({ query: getMembersQuerySchema }), getMembers);
 
 module.exports = router;
